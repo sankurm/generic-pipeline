@@ -13,7 +13,7 @@ namespace
     struct connect_error : public std::exception {};
     struct subscribe_error : public std::exception {};
 
-    std::string get_env(std::string_view varname) {
+    std::string get_env(std::string&& varname) {
         return "/config/kafka.json";
     }
 
