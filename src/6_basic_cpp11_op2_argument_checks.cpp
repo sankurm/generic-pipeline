@@ -12,7 +12,7 @@ auto operator|(T&& val, Callable&& fn) -> typename std::result_of<Callable(T)>::
 
 //Pre-C++17 code without std::optional
 //Code relies on special values like empty string, kafka_config to be convertible to bool and return bools to determine success of a step
-namespace 
+namespace
 {
     struct env_error : public std::exception {};
     struct file_error : public std::exception {};
