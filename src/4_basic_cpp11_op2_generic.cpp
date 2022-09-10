@@ -4,6 +4,7 @@
 #include <type_traits>
 
 //The generic implementation also takes care of the return type of Callable being different than T
+//Here, parse_kafka_config(std::string&&) -> kafka_config
 template<typename T, typename Callable>
 auto operator|(T&& val, Callable&& fn) -> typename std::result_of<Callable(T)>::type {
     return std::forward<Callable>(fn)(std::forward<T>(val));
@@ -54,10 +55,9 @@ namespace
     }
 
     kafka_consumer init_kafka() {
-        auto contents = get_env("kafka-config-filename") | get_file_contents;
-        if (contents.empty()) { throw file_error{}; }
-
-        auto config = parse_kafka_config(std::move(contents));
+        auto config = get_env("kafka-config-filename")
+                        | get_file_contents
+                        | parse_kafka_config;
         if (!config) { throw json_error{}; }
 
         auto consumer = create_kafka_consumer(std::move(config));
