@@ -63,6 +63,8 @@ namespace
         return consumer;
     }
 
+    //All functions check before use
+    //This is the wrong-way round - each function is assuming which is the previous function to throw the correct exception
     kafka_consumer init_kafka() {
         return get_env("kafka-config-filename")
                         | get_file_contents
