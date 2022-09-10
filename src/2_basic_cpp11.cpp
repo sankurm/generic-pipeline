@@ -2,6 +2,8 @@
 #include <iostream>
 #include <exception>
 
+//Pre-C++17 code without std::optional
+//Code relies on special values like empty string, kafka_config to be convertible to bool and return bools to determine success of a step
 namespace 
 {
     struct env_error : public std::exception {};

@@ -3,6 +3,8 @@
 #include <optional>
 #include <iostream>
 
+//C++17 - disciplined code using std::optional
+
 namespace 
 {
     std::optional<std::string> get_env(std::string_view varname) {
