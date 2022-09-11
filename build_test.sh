@@ -11,6 +11,8 @@ if [ ${DIR} -eq 1 ]; then
     CXXSTD="-std=c++11"
 elif [ ${DIR} -eq 2 ]; then
     CXXSTD="-std=c++17"
+elif [ ${DIR} -eq 3 ]; then
+    CXXSTD="-std=c++20"
 fi
 
 #Compile
