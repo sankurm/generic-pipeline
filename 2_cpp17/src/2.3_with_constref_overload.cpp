@@ -4,7 +4,7 @@
 #include <iostream>
 
 template<typename T, typename Callable>
-auto operator|(T&& val, Callable&& fn) -> typename std::result_of<Callable(T)>::type {
+auto operator|(T&& val, Callable&& fn) -> typename std::invoke_result_t<Callable, T> {
     return std::forward<Callable>(fn)(std::forward<T>(val));
 }
 
