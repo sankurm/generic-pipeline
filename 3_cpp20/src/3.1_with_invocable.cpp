@@ -3,9 +3,11 @@
 #include <optional>
 #include <iostream>
 #include <functional>
+#include <concepts>
 
 template<typename T, typename Callable>
-auto operator|(T&& val, Callable&& fn) -> typename std::result_of<Callable(T)>::type {
+requires std::invocable<Callable, T>
+auto operator|(T&& val, Callable&& fn) -> typename std::invoke_result_t<Callable, T> {
     return std::invoke(std::forward<Callable>(fn), std::forward<T>(val));
 }
 
