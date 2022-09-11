@@ -47,9 +47,6 @@ namespace
         return kafka_config{};
     }
 
-    struct certificate {};
-    certificate get_certificate() { return certificate{}; }
-
     struct kafka_consumer
     {
         kafka_consumer(const kafka_config& config) {}
