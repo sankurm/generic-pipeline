@@ -2,16 +2,17 @@
 #include <string_view>
 #include <optional>
 #include <iostream>
+#include <functional>
 
 template<typename T, typename Callable>
 auto operator|(T&& val, Callable&& fn) -> typename std::invoke_result_t<Callable, T> {
-    return std::forward<Callable>(fn)(std::forward<T>(val));
+    return std::invoke(std::forward<Callable>(fn), std::forward<T>(val));
 }
 
 //Handle unwrapping of std::optional
 template<typename T, typename Callable>
 auto operator|(std::optional<T>&& opt, Callable&& fn) -> typename std::invoke_result_t<Callable, T> {
-    return opt?  std::forward<Callable>(fn)(*std::move(opt)): std::nullopt;
+    return opt? std::invoke(std::forward<Callable>(fn), *std::move(opt)): std::nullopt;
 }
 
 //C++17 - disciplined code using std::optional
