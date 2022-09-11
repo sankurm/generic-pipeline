@@ -34,13 +34,13 @@ namespace
         return std::make_optional<kafka_consumer>(std::move(config));
     }
 
-    std::optional<kafka_consumer> connect(kafka_consumer&& consumer) {
+    /*std::optional<kafka_consumer> connect(kafka_consumer&& consumer) {
         return consumer.connect()? std::make_optional(consumer): std::nullopt;
     }
 
     std::optional<kafka_consumer> subscribe(kafka_consumer&& consumer) {
         return consumer.subscribe()? std::make_optional(consumer): std::nullopt;
-    }
+    }*/
 
     std::optional<kafka_consumer> init_kafka() {
         auto fname = get_env("kafka-config-filename");
