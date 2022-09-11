@@ -13,10 +13,12 @@ auto operator|(T&& val, Callable&& fn) -> typename std::invoke_result_t<Callable
 
 //Handle unwrapping of std::optional
 template<typename T, typename Callable>
+requires std::invocable<Callable, T>
 auto operator|(std::optional<T>&& opt, Callable&& fn) -> typename std::invoke_result_t<Callable, T> {
     return opt? std::invoke(std::forward<Callable>(fn), *std::move(opt)): std::nullopt;
 }
 template<typename T, typename Callable>
+requires std::invocable<Callable, T>
 auto operator|(const std::optional<T>& opt, Callable&& fn) -> typename std::invoke_result_t<Callable, T> {
     return opt? std::invoke(std::forward<Callable>(fn), *opt): std::nullopt;
 }
