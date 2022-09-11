@@ -66,7 +66,7 @@ namespace
     }
 
     kafka_consumer connect(kafka_consumer&& consumer, const certificate& cert) {
-        if (!consumer.connect(cert)) { throw creation_error{}; }
+        if (!consumer.connect(cert)) { throw connect_error{}; }
         return consumer;
     }
 

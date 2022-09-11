@@ -62,7 +62,7 @@ namespace app
     }
 
     kafka_consumer connect(kafka_consumer&& consumer) {
-        if (!consumer) { throw creation_error{}; }
+        if (!consumer) { throw connect_error{}; }
         consumer.connect();
         return consumer;
     }

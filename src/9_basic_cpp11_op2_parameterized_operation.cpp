@@ -63,7 +63,7 @@ namespace
     }
 
     kafka_consumer connect(kafka_consumer&& consumer) {
-        if (!consumer.connect()) { throw creation_error{}; }
+        if (!consumer.connect()) { throw connect_error{}; }
         return consumer;
     }
 
