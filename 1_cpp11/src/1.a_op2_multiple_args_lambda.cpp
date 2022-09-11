@@ -2,9 +2,10 @@
 #include <iostream>
 #include <exception>
 #include <type_traits>
+#include <functional>
+#include <fstream>
 
 //The generic implementation also takes care of the return type of Callable being different than T
-//Here, parse_kafka_config(std::string&&) -> kafka_config
 template<typename T, typename Callable>
 auto operator|(T&& val, Callable&& fn) -> typename std::result_of<Callable(T)>::type {
     return std::forward<Callable>(fn)(std::forward<T>(val));
@@ -12,7 +13,7 @@ auto operator|(T&& val, Callable&& fn) -> typename std::result_of<Callable(T)>::
 
 //Pre-C++17 code without std::optional
 //Code relies on special values like empty string, kafka_config to be convertible to bool and return bools to determine success of a step
-namespace 
+namespace
 {
     struct env_error : public std::exception {};
     struct file_error : public std::exception {};
@@ -22,10 +23,13 @@ namespace
     struct subscribe_error : public std::exception {};
 
     std::string get_env(std::string&& varname) {
+        if (/* varname not set OR value is empty */false) { throw env_error{}; }
         return "/config/kafka.json";
     }
 
     std::string get_file_contents(std::string&& filename) {
+        std::ifstream file(filename, std::ios::in);
+        if (!file && false) { throw file_error{}; }
         return "file-contents-blah-blah";
     }
 
@@ -35,16 +39,23 @@ namespace
         operator bool() { return true; }
     };
 
+    enum config_type { json, xml, yaml, config_map };
+
+    template<config_type format>
     kafka_config parse_kafka_config(std::string&& config) {
+        if (/* parsing fails == */ false) { throw json_error{}; }
         return kafka_config{};
     }
+
+    struct certificate {};
+    certificate get_certificate() { return certificate{}; }
 
     struct kafka_consumer
     {
         kafka_consumer(const kafka_config& config) {}
         kafka_consumer(kafka_config&& config) {}
 
-        bool connect() { return true; }
+        bool connect(const certificate&) { return true; }
         bool subscribe() { return true; }
 
         operator bool() { return true; }
@@ -54,22 +65,27 @@ namespace
         return kafka_consumer{std::move(config)};
     }
 
-    kafka_consumer init_kafka() {
-        //using namespace std::string_literals;
-        //Can use "kafka-config-filename"s as they need C++14
-        //std::string("kafka-config-filename") | get_env
-        auto config = get_env("kafka-config-filename")
-                        | get_file_contents
-                        | parse_kafka_config;
-        if (!config) { throw json_error{}; }
-
-        auto consumer = create_kafka_consumer(std::move(config));
-        if (!consumer) { throw creation_error{}; }
-
-        if (!consumer.connect()) { throw connect_error{}; }
-        if (!consumer.subscribe()) { throw subscribe_error{}; }
-        
+    kafka_consumer connect(kafka_consumer&& consumer, const certificate& cert) {
+        if (!consumer.connect(cert)) { throw connect_error{}; }
         return consumer;
+    }
+
+    //Invoking an operation taking more than 1 argument
+    //Can use a lambda - Need C++14 to be able to write this code though
+    kafka_consumer init_kafka() {
+        auto cert = get_certificate();
+        return get_env("kafka-config-filename")
+                        | get_file_contents
+                        | parse_kafka_config<xml>
+                        | create_kafka_consumer
+                        //| connect
+                        //This needs C++14 :(
+                        //| [cert = get_certificate()](kafka_consumer&& consumer) { return connect(std::move(consumer), cert); }
+                        | [&cert](kafka_consumer&& consumer) { return connect(std::move(consumer), cert); }
+                        | [](kafka_consumer&& consumer) {
+                            if (!consumer.subscribe()) { throw connect_error{}; }
+                            return consumer;
+                        };
     }
 }
 
