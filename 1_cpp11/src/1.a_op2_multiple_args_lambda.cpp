@@ -70,22 +70,25 @@ namespace
         return consumer;
     }
 
+    auto subscribe = [](kafka_consumer&& consumer) {
+        if (!consumer) { throw subscribe_error{}; }
+        consumer.subscribe();
+        return consumer;
+    };
+
     //Invoking an operation taking more than 1 argument
     //Can use a lambda - Need C++14 to be able to write this code though
     kafka_consumer init_kafka() {
         auto cert = get_certificate();
         return get_env("kafka-config-filename")
-                        | get_file_contents
-                        | parse_kafka_config<xml>
-                        | create_kafka_consumer
-                        //| connect
-                        //This needs C++14 :(
-                        //| [cert = get_certificate()](kafka_consumer&& consumer) { return connect(std::move(consumer), cert); }
-                        | [&cert](kafka_consumer&& consumer) { return connect(std::move(consumer), cert); }
-                        | [](kafka_consumer&& consumer) {
-                            if (!consumer.subscribe()) { throw connect_error{}; }
-                            return consumer;
-                        };
+                | get_file_contents
+                | parse_kafka_config<xml>
+                | create_kafka_consumer
+                //| connect
+                //This needs C++14 :(
+                //| [cert = get_certificate()](kafka_consumer&& consumer) { return connect(std::move(consumer), cert); }
+                | [&cert](kafka_consumer&& consumer) { return connect(std::move(consumer), cert); }
+                | subscribe;
     }
 }
 

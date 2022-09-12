@@ -68,7 +68,7 @@ namespace app
     }
 
     auto subscribe = [](app::kafka_consumer&& consumer) {
-        if (!consumer) { throw app::connect_error{}; }
+        if (!consumer) { throw subscribe_error{}; }
         consumer.subscribe();
         return consumer;
     };

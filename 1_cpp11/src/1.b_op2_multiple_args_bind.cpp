@@ -70,19 +70,22 @@ namespace
         return consumer;
     }
 
+    auto subscribe = [](kafka_consumer&& consumer) {
+        if (!consumer) { throw subscribe_error{}; }
+        consumer.subscribe();
+        return consumer;
+    };
+
     //Invoking an operation taking more than 1 argument
     //std::bind solution
     kafka_consumer init_kafka() {
         return get_env("kafka-config-filename")
-                        | get_file_contents
-                        | parse_kafka_config<xml>
-                        | create_kafka_consumer
-                        //| connect
-                        | std::bind(connect, std::placeholders::_1, get_certificate())
-                        | [](kafka_consumer&& consumer) {
-                            if (!consumer.subscribe()) { throw connect_error{}; }
-                            return consumer;
-                        };
+                | get_file_contents
+                | parse_kafka_config<xml>
+                | create_kafka_consumer
+                //| connect
+                | std::bind(connect, std::placeholders::_1, get_certificate())
+                | subscribe;
     }
 }
 
