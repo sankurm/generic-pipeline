@@ -66,12 +66,13 @@ namespace
 
     std::optional<kafka_consumer> init_kafka() {
         using namespace std::string_literals;
-        auto consumer = "kafka-config-filename"s
-                        | get_env
-                        | get_file_contents
-                        | parse_kafka_config
-                        | create_kafka_consumer;
-        return consumer | connect | subscribe;
+        return "kafka-config-filename"s
+                | get_env
+                | get_file_contents
+                | parse_kafka_config
+                | create_kafka_consumer
+                | connect
+                | subscribe;
     }
 }
 
