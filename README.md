@@ -1,6 +1,7 @@
 # generic-pipeline
 A C++ repository to pipe operations functional and Unix style!
 
+## The Generic Pipeline
 All the pipeline code is in the [generic_pipeline.hpp](/inc/generic_pipeline.hpp). Jump straight to it to the usable pipelines. 
 
 The repository is organised into sections as per the coverage of my talk:
