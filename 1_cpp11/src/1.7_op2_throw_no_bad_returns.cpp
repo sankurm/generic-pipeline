@@ -64,19 +64,21 @@ namespace
         return consumer;
     }
 
+    auto subscribe = [](kafka_consumer&& consumer) {
+        if (!consumer) { throw connect_error{}; }
+        consumer.subscribe();
+        return consumer;
+    };
+
     //All functions check before use
     //This is the wrong-way round - each function is assuming which is the previous function to throw the correct exception
     kafka_consumer init_kafka() {
         return get_env("kafka-config-filename")
-                        | get_file_contents
-                        | parse_kafka_config
-                        | create_kafka_consumer
-                        | connect
-                        //| std::mem_fn(&kafka_consumer::subscribe);  //mem_fn possible only if the member returns what the next step or return type needs to be
-                        | [](kafka_consumer&& consumer) {
-                            if (!consumer.subscribe()) { throw connect_error{}; }
-                            return consumer;
-                        };
+                | get_file_contents
+                | parse_kafka_config
+                | create_kafka_consumer
+                | connect
+                | subscribe;
     }
 }
 

@@ -66,6 +66,12 @@ namespace app
         consumer.connect();
         return consumer;
     }
+
+    auto subscribe = [](app::kafka_consumer&& consumer) {
+        if (!consumer) { throw app::connect_error{}; }
+        consumer.subscribe();
+        return consumer;
+    };
 }
 
 namespace framework
@@ -74,16 +80,11 @@ namespace framework
     //This is the wrong-way round - each function is assuming which is the previous function to throw the correct exception
     app::kafka_consumer init_kafka() {
         return app::get_env("kafka-config-filename")
-                        | app::get_file_contents
-                        | app::parse_kafka_config
-                        | app::create_kafka_consumer
-                        | app::connect
-                        //| std::mem_fn(&kafka_consumer::subscribe);  //mem_fn possible only if the member returns what the next step or return type needs to be
-                        | [](app::kafka_consumer&& consumer) {
-                            if (!consumer) { throw app::connect_error{}; }
-                            consumer.subscribe();
-                            return consumer;
-                        };
+                | app::get_file_contents
+                | app::parse_kafka_config
+                | app::create_kafka_consumer
+                | app::connect
+                | app::subscribe;
     }
 }
 
