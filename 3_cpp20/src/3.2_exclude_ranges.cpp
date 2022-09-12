@@ -67,11 +67,11 @@ namespace
 
     std::optional<kafka_consumer> init_kafka() {
         return get_env("kafka-config-filename")
-                        | get_file_contents
-                        | parse_kafka_config
-                        | create_kafka_consumer
-                        | connect
-                        | subscribe;
+                | get_file_contents
+                | parse_kafka_config
+                | create_kafka_consumer
+                | connect
+                | subscribe;
     }
 }
 
