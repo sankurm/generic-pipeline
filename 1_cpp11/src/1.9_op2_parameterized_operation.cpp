@@ -67,19 +67,21 @@ namespace
         return consumer;
     }
 
+    auto subscribe = [](kafka_consumer&& consumer) {
+        if (!consumer) { throw connect_error{}; }
+        consumer.subscribe();
+        return consumer;
+    };
+
     //Parameterized function can be specified
     //The corresponding template shall be instantiated and used
     kafka_consumer init_kafka() {
         return get_env("kafka-config-filename")
-                        | get_file_contents
-                        | parse_kafka_config<xml>
-                        | create_kafka_consumer
-                        | connect
-                        //| std::mem_fn(&kafka_consumer::subscribe);  //mem_fn possible only if the member returns what the next step or return type needs to be
-                        | [](kafka_consumer&& consumer) {
-                            if (!consumer.subscribe()) { throw connect_error{}; }
-                            return consumer;
-                        };
+                | get_file_contents
+                | parse_kafka_config<xml>
+                | create_kafka_consumer
+                | connect
+                | subscribe;
     }
 }
 

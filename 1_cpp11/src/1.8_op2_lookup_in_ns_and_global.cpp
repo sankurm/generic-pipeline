@@ -74,7 +74,7 @@ namespace app
     };
 }
 
-namespace framework
+namespace framework1
 {
     //All functions check before use
     //This is the wrong-way round - each function is assuming which is the previous function to throw the correct exception
@@ -89,7 +89,7 @@ namespace framework
 }
 
 int main(int argc, char** argv) {
-    auto consumer = framework::init_kafka();
+    auto consumer = framework1::init_kafka();
     if (consumer) { std::cout << "Consumer creation successful\n"; }
     else { std::cout << "Consumer creation failed\n"; }
 
