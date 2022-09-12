@@ -16,9 +16,14 @@ elif [ ${DIR} -eq 3 ]; then
 fi
 
 #Compile
-echo g++ ${CXXSTD} -Wall -Werror ${HOME}/${DIR}_*/src/${PREFIX}_*.cpp -o ./${PREFIX}.out
+echo -e "\033[0;33m$ g++ ${CXXSTD} -Wall -Werror ${HOME}/${DIR}_*/src/${PREFIX}_*.cpp -o ./${PREFIX}.out\033[0m"
 g++ ${CXXSTD} -Wall -Werror ${HOME}/${DIR}_*/src/${PREFIX}_*.cpp -o ./${PREFIX}.out
 
+status=$?
+if [ ${status} -ne 0 ]; then
+    exit ${status}
+fi
+
 #Run
-echo ./${PREFIX}.out
+echo -e "\033[0;33m$ ./${PREFIX}.out\033[0m"
 ./${PREFIX}.out
