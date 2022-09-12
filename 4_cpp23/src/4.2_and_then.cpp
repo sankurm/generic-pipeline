@@ -8,7 +8,7 @@
 #include <type_traits>
 
 template<typename T>
-concept basic_optional = requires (T t, T lvalue_t, T&& rvalue_t) {
+concept basic_optional = requires (T t) {
     typename T::value_type;
     std::convertible_to<T, bool>;
     std::same_as<std::remove_cvref<decltype(*t)>, typename T::value_type>;
