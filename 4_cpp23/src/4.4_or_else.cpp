@@ -30,8 +30,8 @@ auto operator|(std::optional<T>&& opt, Callable&& fn) -> typename std::invoke_re
     return opt? std::invoke(std::forward<Callable>(fn), *std::move(opt)): std::nullopt;
 }
 template<typename T, typename Callable>
-requires std::invocable<Callable, T> && basic_optional<typename std::invoke_result_t<Callable, T>>
-auto operator|(const std::optional<T>& opt, Callable&& fn) -> typename std::invoke_result_t<Callable, T> {
+requires std::invocable<Callable, T> && basic_optional<typename std::invoke_result_t<Callable, const T&>>
+auto operator|(const std::optional<T>& opt, Callable&& fn) -> typename std::invoke_result_t<Callable, const T&> {
     return opt? std::invoke(std::forward<Callable>(fn), *opt): std::nullopt;
 }
 
@@ -42,8 +42,8 @@ auto operator|(std::optional<T>&& opt, Callable&& fn) -> std::optional<typename 
     return opt? std::make_optional(std::invoke(std::forward<Callable>(fn), *std::move(opt))): std::nullopt;
 }
 template<typename T, typename Callable>
-requires std::invocable<Callable, T> && (!basic_optional<typename std::invoke_result_t<Callable, T>>)
-auto operator|(const std::optional<T>& opt, Callable&& fn) -> std::optional<typename std::invoke_result_t<Callable, T>> {
+requires std::invocable<Callable, T> && (!basic_optional<typename std::invoke_result_t<Callable, const T&>>)
+auto operator|(const std::optional<T>& opt, Callable&& fn) -> std::optional<typename std::invoke_result_t<Callable, const T&>> {
     return opt? std::make_optional(std::invoke(std::forward<Callable>(fn), *opt)): std::nullopt;
 }
 
