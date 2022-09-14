@@ -6,6 +6,7 @@ DIR=`echo ${PREFIX} | cut -d'.' -f1`
 FILE=`echo ${PREFIX} | cut -d'.' -f2`
 
 HOME=..
+INC="-I ${HOME}"
 
 if [ ${DIR} -eq 1 ]; then
     CXXSTD="-std=c++11"
@@ -17,9 +18,10 @@ elif [ ${DIR} -eq 4 ]; then
     CXXSTD="-std=c++20"
 fi
 
+
 #Compile
-echo -e "\033[0;33m$ g++ ${CXXSTD} -Wall -Werror ${HOME}/${DIR}_*/src/${PREFIX}_*.cpp -o ./${PREFIX}.out\033[0m"
-g++ ${CXXSTD} -Wall -Werror ${HOME}/${DIR}_*/src/${PREFIX}_*.cpp -o ./${PREFIX}.out
+echo -e "\033[0;33m$ g++ ${CXXSTD} -Wall -Werror ${INC} ${HOME}/${DIR}_*/src/${PREFIX}_*.cpp -o ./${PREFIX}.out\033[0m"
+g++ ${CXXSTD} -Wall -Werror ${INC} ${HOME}/${DIR}_*/src/${PREFIX}_*.cpp -o ./${PREFIX}.out
 
 status=$?
 if [ ${status} -ne 0 ]; then
