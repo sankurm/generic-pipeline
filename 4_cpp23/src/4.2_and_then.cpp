@@ -29,8 +29,8 @@ auto operator|(std::optional<T>&& opt, Callable&& fn) -> typename std::invoke_re
     return opt? std::invoke(std::forward<Callable>(fn), *std::move(opt)): std::nullopt;
 }
 template<typename T, typename Callable>
-requires std::invocable<Callable, T> && basic_optional<typename std::invoke_result_t<Callable, T>>
-auto operator|(const std::optional<T>& opt, Callable&& fn) -> typename std::invoke_result_t<Callable, T> {
+requires std::invocable<Callable, T> && basic_optional<typename std::invoke_result_t<Callable, const T&>>
+auto operator|(const std::optional<T>& opt, Callable&& fn) -> typename std::invoke_result_t<Callable, const T&> {
     return opt? std::invoke(std::forward<Callable>(fn), *opt): std::nullopt;
 }
 
@@ -76,10 +76,11 @@ namespace
     }
 
     std::optional<kafka_consumer> init_kafka() {
-        return get_env("kafka-config-filename")
+        auto opt_consumer = get_env("kafka-config-filename")
                 | get_file_contents
                 | parse_kafka_config
-                | create_kafka_consumer
+                | create_kafka_consumer;
+        return opt_consumer
                 | connect
                 | subscribe;
     }
