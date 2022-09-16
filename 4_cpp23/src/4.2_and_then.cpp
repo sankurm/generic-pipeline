@@ -7,6 +7,7 @@
 #include <ranges>
 #include <type_traits>
 
+/*
 template<typename T>
 concept basic_optional = requires (T t) {
     typename T::value_type;
@@ -15,6 +16,25 @@ concept basic_optional = requires (T t) {
     std::constructible_from<T, std::nullopt_t>;
 };
 static_assert(basic_optional<std::optional<int>>);
+*/
+
+namespace internal
+{
+    template<typename T>
+    struct is_std_optional : std::false_type {};
+
+    template<typename T>
+    struct is_std_optional<std::optional<T>> : std::true_type {};
+
+    template<typename T>
+    const bool is_std_optional_v = is_std_optional<T>::value;
+
+    template<typename Callable, typename... Args>
+    concept invocable_returns_std_optional = std::invocable<Callable, Args...> && is_std_optional_v<typename std::invoke_result_t<Callable, Args...>>;
+
+    template<typename Callable, typename... Args>
+    concept invocable_returns_not_std_optional = std::invocable<Callable, Args...> && !is_std_optional_v<typename std::invoke_result_t<Callable, Args...>>;
+}
 
 template<typename T, typename Callable>
 requires (not std::ranges::range<T> && std::invocable<Callable, T>)
@@ -24,12 +44,12 @@ auto operator|(T&& val, Callable&& fn) -> typename std::invoke_result_t<Callable
 
 //These overloads handle std::optional<T>::and_then case
 template<typename T, typename Callable>
-requires std::invocable<Callable, T> && basic_optional<typename std::invoke_result_t<Callable, T>>
+requires internal::invocable_returns_std_optional<Callable, T>
 auto operator|(std::optional<T>&& opt, Callable&& fn) -> typename std::invoke_result_t<Callable, T> {
     return opt? std::invoke(std::forward<Callable>(fn), *std::move(opt)): std::nullopt;
 }
 template<typename T, typename Callable>
-requires std::invocable<Callable, T> && basic_optional<typename std::invoke_result_t<Callable, const T&>>
+requires internal::invocable_returns_std_optional<Callable, const T&>
 auto operator|(const std::optional<T>& opt, Callable&& fn) -> typename std::invoke_result_t<Callable, const T&> {
     return opt? std::invoke(std::forward<Callable>(fn), *opt): std::nullopt;
 }
