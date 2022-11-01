@@ -25,19 +25,21 @@ Improvise and make concise the continuations of the `std::optional` monadic inte
 Steps are: 
 
 ```sh
-git clone git@github.com:sankurm/generic-pipeline.git
+$ git clone git@github.com:sankurm/generic-pipeline.git
 
-mkdir build
-cd build
+$ mkdir build
+$ cd build
 
 # To compile the file 1.2_op1_concrete.cpp in directory 1_cpp11/src:
-ls ../1_cpp11/src/1.2_op1_concrete.cpp
-../build_test.sh 1.2
+$ ls ../1_cpp11/src/1.2_op1_concrete.cpp
+../1_cpp11/src/1.2_op1_concrete.cpp
+$ ../build_test.sh 1.2
 
 # Similarly, to compile file 2.3_with_constref_overload.cpp inside directory 2_cpp17/src:
-ls ../2_cpp17/src/2.3_with_constref_overload.cpp
-../build_test.sh 2.3
+$ ls ../2_cpp17/src/2.3_with_constref_overload.cpp
+../2_cpp17/src/2.3_with_constref_overload.cpp
+$ ../build_test.sh 2.3
 
 # Syntax is
-../build_test.sh <file-prefix-no>
+$ ../build_test.sh <file-prefix-no>
 ```
