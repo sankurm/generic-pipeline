@@ -1,6 +1,8 @@
 # generic-pipeline
 A C++ repository to pipe operations functional and Unix style!
 
+Header-only. Dive right in: [generic_pipeline.hpp](/inc/generic_pipeline.hpp).
+
 ![Code snippet showing the simplicity achieved by genreic pipeline](./img/generic-pipeline.png "Simplicity using generic-pipeline")
 
 ## The Generic Pipeline
