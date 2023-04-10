@@ -1,6 +1,8 @@
 # generic-pipeline
 A C++ repository to pipe operations functional and Unix style!
 
+![Code snippet showing the simplicity achieved by genreic pipeline](./img/generic-pipeline.png "Simplicity using generic-pipeline")
+
 ## The Generic Pipeline
 All the pipeline code is in the [generic_pipeline.hpp](/inc/generic_pipeline.hpp). Jump straight to it to the usable pipelines. This currently compiles with `-std=c++20`. I shall be updating the code to add conditional constructs to enable backward compatability. 
 
